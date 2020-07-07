@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>首页-个人博客</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="/css/general.css"/>
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+</head>
+<body>
+    <!-- 导航条 -->
+    <div th:replace="~{navigation :: nav}"></div>
+    <!-- 首页文章 -->
+    <div class="row" style="margin: 15px 50px 0 50px;padding:20px;">
+        <h2 th:if="${search == ''}" style="margin:20px 15px 15px 15px;">所有文章</h2>
+        <h2 th:if="${search != ''}" style="margin:20px 15px 15px 15px;">搜索结果->"[[${search}]]"</h2>
+        <div class="col-lg-4" th:each="list : ${pagination.articles}">
+            <div class="thumbnail">
+                <div class="caption">
+                    <!-- 文章类别 -->
+                    <p style="color:red" th:text="${list.name}"></p>
+                    <!-- 文章id -->
+                    <a th:href="@{'/articles/' + ${list.id}}" target="_blank" class="article">
+                        <!-- 文章标题 -->
+                        <h3 th:text="${list.title}" class="title"></h3>
+                    </a>
+                    <div style="display: flex;justify-content:space-between">
+                        <div>
+                            <!-- 文章作者，点击跳转作者主页 -->
+                            <a th:href="@{'/user/' + ${list.userId}}" th:text="${list.nickname}"> </a>
+                            <div style="font-size:10px;color:#8e8e93" th:inline="text">[[${list.showTime}]]</div>
+                        </div>
+                        <div style="line-height:40px">
+                            <span class="glyphicon glyphicon-eye-open"></span> <span th:text="${list.articleViews}"></span>
+                            <span class="glyphicon glyphicon-comment"></span> <span th:text="${list.articleCommentCount}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分页栏 -->
+    <nav aria-label="Page navigation" style="text-align:center">
+        <ul class="pagination">
+            <!-- 首页 -->
+            <li th:if="${pagination.showFirstPage}">
+                <a th:href="@{'/?page=1&search=' + ${search}}" aria-label="FirstPage">
+                    <span aria-hidden="true">&lt;&lt;</span>
+                </a>
+            </li>
+            <!-- 上一页 -->
+            <li th:if="${pagination.showPrevious}">
+                <a th:href="@{'/?page=' + ${pagination.page-1} + '&search=' + ${search}}" aria-label="Previous">
+                    <span aria-hidden="true">&lt;</span>
+                </a>
+            </li>
+            <!-- 数字页 -->
+            <li th:each="page : ${pagination.pages}" th:class="${pagination.page == page} ? 'active': ''"><a th:href="@{'/?page=' + ${page}+ '&search=' + ${search}}" th:text="${page}"></a></li>
+            <!-- 下一页 -->
+            <li th:if="${pagination.showNextPage}">
+                <a th:href="@{'/?page=' + ${pagination.page+1} + '&search=' + ${search}}" aria-label="Next">
+                    <span aria-hidden="true">&gt;</span>
+                </a>
+            </li>
+            <!-- 尾页 -->
+            <li th:if="${pagination.showEndPage}">
+                <a th:href="@{'/?page=' + ${pagination.totalPage} + '&search=' + ${search}}" aria-label="EndPage">
+                    <span aria-hidden="true">&gt;&gt;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</body>
+</html>

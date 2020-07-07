@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>用户-个人博客</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="/css/general.css"/>
+    <link rel="stylesheet" href="/css/userIndex.css"/>
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+</head>
+<body>
+    <!-- 导航条 -->
+    <div th:replace="~{navigation :: nav}"></div>
+    <div class="row" style="margin:10px 50px 0 50px;">
+        <div class="col-lg-3">
+            <div class="sideBar">
+                <h3>关于作者</h3>
+                <dl style="width:100%">
+                    <dt th:inline="text">昵称：[[${user.nickname}]]</dt>
+                    <dt th:inline="text">简介：[[${user.resume}]]</dt>
+                    <dt th:inline="text">博客：[[${articleCount}]]</dt>
+                    <dt th:inline="text">评论：[[${commentCount}]]</dt>
+                    <dt th:inline="text">访问：[[${viewsCount}]]</dt>
+                </dl>
+            </div>
+
+            <div class="sideBar">
+                <h3>最新评论</h3>
+                <dl th:each="comment,count : ${comments}">
+                    <dt style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;"><a th:inline="text" class="article" th:href="@{'/articles/' + ${comment.articleId}}" target="_blank">[[${count.count}]].[[${comment.title}]]</a></dt>
+                    <dt style="color:darkgray;overflow: hidden;text-overflow: ellipsis;white-space:nowrap;" th:inline="text">[[${comment.content}]]</dt>
+                    <dt style="text-align:right" th:inline="text">--[[${comment.uname}]]</dt>
+                </dl>
+            </div>
+            <br/>
+            <div class="sideBar">
+                <h3>热门文章</h3>
+                <dl>
+                    <dt th:each="article, count : ${articleList}">
+                        <a class="article" th:inline="text" th:href="@{'/articles/' + ${article.id}}" target="_blank">
+                            [[${count.count}]].[[${article.title}]]([[${article.articleViews}]])
+                        </a>
+                    </dt>
+                </dl>
+            </div>
+        </div>
+        <!-- 文章列表 -->
+        <div class="col-lg-8" style="margin-left: 15px" >
+            <div th:if="${pagination.articles.size() == 0}" style="display:flex;height:200px;font-size:30px;text-align:center;justify-content: center;align-items: center"> 还未拥有博客信息</div>
+            <div class="thumbnail" th:each="list : ${pagination.articles}">
+                <div class="caption">
+                    <!-- 文章类别 -->
+                    <p style="color:red" th:text="${list.name}"></p>
+                    <!-- 文章id -->
+                    <a th:href="@{'/articles/' + ${list.id}}" class="article" target="_blank">
+                        <!-- 文章标题 -->
+                        <h3 th:text="${list.title}" style="overflow: hidden;text-overflow: ellipsis;white-space:nowrap;"></h3>
+                    </a>
+                    <div style="display: flex;justify-content:space-between">
+                        <div>
+                            <!-- 文章作者，点击跳转作者主页 -->
+                            <a th:href="@{'/user/' + ${list.userId}}" th:text="${list.nickname}"> </a>
+                            <div style="font-size:10px;color:#8e8e93" th:inline="text">[[${list.showTime}]]</div>
+                        </div>
+                        <div style="line-height:40px">
+                            <span class="glyphicon glyphicon-eye-open"></span> <span th:text="${list.articleViews}"></span>
+                            <span class="glyphicon glyphicon-comment"></span> <span th:text="${list.articleCommentCount}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 分页栏 -->
+    <nav aria-label="Page navigation" style="text-align:center">
+        <ul class="pagination">
+            <!-- 首页 -->
+            <li th:if="${pagination.showFirstPage}">
+                <a th:href="@{'/user/' + ${user.id} + '?page=1'}" aria-label="FirstPage">
+                    <span aria-hidden="true">&lt;&lt;</span>
+                </a>
+            </li>
+            <!-- 上一页 -->
+            <li th:if="${pagination.showPrevious}">
+                <a th:href="@{'/user/' + ${user.id} + '?page=' + ${pagination.page-1}}" aria-label="Previous">
+                    <span aria-hidden="true">&lt;</span>
+                </a>
+            </li>
+            <!-- 数字跳转 -->
+            <li th:each="page : ${pagination.pages}" th:class="${pagination.page == page} ? 'active': ''"><a th:href="@{'/user/' + ${user.id} + '?page=' + ${page}}" th:text="${page}"></a></li>
+            <!-- 下一页 -->
+            <li th:if="${pagination.showNextPage}">
+                <a th:href="@{'/user/' + ${user.id} + '?page=' + ${pagination.page+1}}" aria-label="Next">
+                    <span aria-hidden="true">&gt;</span>
+                </a>
+            </li>
+            <!-- 尾页 -->
+            <li th:if="${pagination.showEndPage}">
+                <a th:href="@{'/user/' + ${user.id} + '?page=' + ${pagination.totalPage}}" aria-label="EndPage">
+                    <span aria-hidden="true">&gt;&gt;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</body>
+</html>

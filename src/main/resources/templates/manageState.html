@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>审核管理-后台管理</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="/css/general.css"/>
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+</head>
+<body>
+<div th:replace="~{navigation :: nav}"></div>
+<div class="row" style="margin:5px;">
+    <div class="col-lg-3" style="backgroundcolor:black">
+        <ul class="nav nav-pills nav-stacked">
+            <li role="presentation"><a href="/manage/profile">个人资料管理</a></li>
+            <li role="presentation"><a href="/manage/articles">文章管理</a></li>
+            <li role="presentation"><a href="/manage/categorys">类别管理</a></li>
+            <li role="presentation"><a href="/manage/user">用户管理</a></li>
+            <li role="presentation" class="active"><a href="#">审核管理</a></li>
+        </ul>
+    </div>
+    <div class="col-lg-9">
+        <table class="table table-striped">
+            <tr>
+                <th>#</th>
+                <th>文章标题</th>
+                <th>作者</th>
+                <th>类别名称</th>
+                <th>创建时间</th>
+                <th>操作</th>
+            </tr>
+            <tr th:each="article,articleStat : ${pagination.articles}">
+                <!-- 计数 -->
+                <td th:text="${articleStat.count}"></td>
+                <!-- 文章标题 -->
+                <td><a th:href="@{'/articles/' + ${article.id}}" th:text="${article.title}" target="_blank"></a></td>
+                <!-- 作者 -->
+                <td th:text="${article.nickname}"></td>
+                <!-- 类别名称 -->
+                <td th:text="${article.name}"></td>
+                <!-- 创建时间 -->
+                <td th:text="${article.showTime}"></td>
+                <!-- 操作 -->
+                <td><a th:onclick="pass([[${article.id}]])">通过</a> <a th:onclick="notPass([[${article.id}]])">不通过</a></td>
+            </tr>
+        </table>
+        <!-- 分页栏 -->
+        <nav aria-label="Page navigation" style="text-align:center">
+            <ul class="pagination">
+                <li th:if="${pagination.showFirstPage}">
+                    <a th:href="@{'/manage/state/'}" aria-label="FirstPage">
+                        <span aria-hidden="true">&lt;&lt;</span>
+                    </a>
+                </li>
+                <li th:if="${pagination.showPrevious}">
+                    <a th:href="@{'/manage/state?page=' + ${pagination.page-1}}" aria-label="Previous">
+                        <span aria-hidden="true">&lt;</span>
+                    </a>
+                </li>
+                <li th:each="page : ${pagination.pages}" th:class="${pagination.page == page} ? 'active': ''"><a th:href="@{'/manage/state?page=' + ${page}}" th:text="${page}"></a></li>
+                <li th:if="${pagination.showNextPage}">
+                    <a th:href="@{'/manage/state?page=' + ${pagination.page+1}}" aria-label="Next">
+                        <span aria-hidden="true">&gt;</span>
+                    </a>
+                </li>
+                <li th:if="${pagination.showEndPage}">
+                    <a th:href="@{'/manage/state?page=' + ${pagination.totalPage}}" aria-label="EndPage">
+                        <span aria-hidden="true">&gt;&gt;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<script>
+    function pass(id) {
+        if(confirm("确定审核通过吗？")) {
+            $.ajax({
+                type:"get",
+                url:"/check",
+                data:{
+                    "id": id,
+                    "state":3
+                },
+                success:function(result) {
+                    location.reload();
+                }
+            });
+        }
+    }
+    function notPass(id) {
+        if(confirm("确定审核不通过吗？")) {
+            $.ajax({
+                type:"get",
+                url:"/check",
+                data:{
+                    "id": id,
+                    "state":4
+                },
+                success:function(result) {
+                    location.reload();
+                }
+            });
+        }
+    }
+</script>
+</body>
+</html>

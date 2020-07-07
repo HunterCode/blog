@@ -1,0 +1,32 @@
+.sideBar {
+    background: white;
+}
+.sideBar h3 {
+    border-bottom: 1px solid #ddd;
+    padding: 15px 20px;
+    font-size: 18px;
+    margin: 0;
+}
+.sideBar dl {
+    padding: 15px 20px 0 20px;
+    margin-bottom: 0;
+}
+.sideBar dl:last-child {
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+.nickname {
+    padding: 15px 20px 0 20px;
+    font-size: 18px;
+    margin: 0;
+}
+
+.resume{
+    padding: 0 20px;
+    border-bottom: 1px solid #ddd;
+    font-size: 16px;
+    margin: 0;
+}
+dt {
+    font-weight: 500;
+}

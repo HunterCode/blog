@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>类别管理-后台管理</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="/css/general.css"/>
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="/js/manageCategorys.js"></script>
+</head>
+<body>
+<div th:replace="~{navigation :: nav}"></div>
+<div class="row" style="margin:5px;">
+    <div class="col-lg-3" style="backgroundcolor:black">
+        <ul class="nav nav-pills nav-stacked">
+            <li role="presentation"><a href="/manage/profile">个人资料管理</a></li>
+            <li role="presentation" ><a href="/manage/articles">文章管理</a></li>
+            <li role="presentation" class="active"><a>类别管理</a></li>
+            <li th:if="${session.user.roleid == 1}" role="presentation"><a href="/manage/user">用户管理</a></li>
+            <li th:if="${session.user.roleid == 1}" role="presentation"><a href="/manage/state">审核管理</a></li>
+        </ul>
+    </div>
+    <div class="col-lg-9">
+
+        <div class="input-group" style="margin-bottom:15px;width:50%">
+                <input id="name" type="text" class="form-control" autocomplete="off" placeholder="类别名称">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" onclick="categoryAdd()">添加类别</button>
+                </span>
+        </div>
+
+
+        <table class="table table-striped">
+            <tr>
+                <th>#</th>
+                <th>类别名称</th>
+                <th>文章总数</th>
+                <th>操作</th>
+            </tr>
+            <tr th:each="category,categoryStat : ${categorys}">
+                <!-- 计数 -->
+                <td th:text="${categoryStat.count}"></td>
+                <!-- 类别名称 -->
+                <td><input th:id="i + ${category.id}" type="text" th:value="${category.name}" maxlength="8" style="display:none" placeholder="类别名称1-8字符" autocomplete="off"/><span th:id="s + ${category.id}" th:text="${category.name}"></span></td>
+                <!-- 文章总数 -->
+                <td th:text="${category.getArticleCount()}"></td>
+                <!-- 操作 -->
+                <td>
+                    <!-- 编辑 -->
+                    <a th:id="${category.id}" th:onclick="'updateCategory(' + ${category.id} + ')'">编辑</a>
+                    <!-- 删除 -->
+                    <a th:onclick="delCategory([[${category.id}]])">删除</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>

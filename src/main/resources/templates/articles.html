@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${articles.title}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="/css/general.css"/>
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="/js/article.js"></script>
+</head>
+<body>
+    <!-- 导航条 -->
+    <div th:replace="~{navigation :: nav}"></div>
+
+    <!-- 文章 -->
+    <div class="row" style="margin:5px">
+        <div class="col-lg-offset-3 col-lg-6">
+            <h2 th:text="${articles.title}"></h2>
+            <p th:inline="text"> [[${articles.nickname}]] | [[${articles.showTime}]]</p>
+            <p th:text="${articles.description}" class="content" style="line-height: 35px;"></p>
+        </div>
+    </div>
+
+    <!-- 评论区 -->
+    <div class="row" style="margin:5px">
+        <hr/>
+        <div class="form-group col-lg-offset-3 col-lg-5" th:if="${articles.state == 3}">
+            <label>评论区</label>
+            <div th:if="${session.user != null}">
+                <input type="hidden" id="articleId" th:value="${articles.id}"/>
+                <input type="hidden" id="userId" th:value="${session.user.id}"/>
+                <textarea placeholder="评论内容(1-255位)" name="content" id="content" class="form-control" cols="30" rows="3" maxlength="255"></textarea>
+                <p style="text-align: right; color: gray; margin-bottom: 0;" id="textCount" >255</p>
+                <button class="btn btn-success" style="float:right;margin-top:5px;" onclick="comment()">回复</button>
+            </div>
+            <div th:if="${session.user == null}">
+                <a href="/login">请先登录再参与评论</a>
+            </div>
+            <p style="clear:both;border-bottom:1px solid #ddd;">
+                <span th:inline="text">共有[[${articles.articleCommentCount}]]条评论</span>
+            </p>
+            <div>
+                <ul>
+                    <li th:each="comment : ${comments}" >
+                        <div>
+                            <!-- 评论人 -->
+                            <p th:inline="text">[[${comment.uname}]] | [[${comment.showTime}]]
+                                <a th:if="${session.user != null}">
+                                   <a th:if="${(session.user.id == comment.commentator) || (session.user.id == articles.creator)}" th:onclick="delComment([[${comment.id}]])">（删除评论）</a>
+                                </a>
+                            </p>
+                            <!-- 评论内容 -->
+                            <p th:text="${comment.content}" class="content"></p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

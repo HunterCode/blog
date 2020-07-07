@@ -1,0 +1,26 @@
+.article:hover{
+    color:dodgerblue;
+    text-decoration:none;
+}
+.article {
+    color:black;
+}
+textarea {
+    resize: none;
+}
+.title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space:nowrap;
+}
+
+body {
+    background-image: url('/images/leaves-pattern.png');
+}
+
+.content {
+    text-align: left;
+    font-size: 16px;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
